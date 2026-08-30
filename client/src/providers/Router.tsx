@@ -1,21 +1,40 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
-import Login from "../features/auth/pages/Login";
-import SignUp from "../features/auth/pages/SignUp";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
+import Login from "../features/auth/pages/login-page";
+import SignUp from "../features/auth/pages/sign-up-page";
+
+import Chat from "../features/chat/pages/chat-page";
 import Public from "#components/ui/layout/Public";
 import Protected from "#components/ui/layout/Protected";
+import ForgotPassword from "../features/auth/pages/forgot-password-page";
+import ResetPassword from "../features/auth/pages/reset-password-page";
 
 const router = createBrowserRouter([
   {
     path: "/",
+
     element: <Public />,
+
     children: [
       { index: true, element: <Login /> },
-      { path: "/sign_up", element: <SignUp /> },
+
+      { path: "sign-up", element: <SignUp /> },
+
+      { path: "forgot-password", element: <ForgotPassword /> },
+
+      { path: "reset-password", element: <ResetPassword /> },
     ],
   },
+
   {
     element: <Protected />,
-    children: [],
+
+    children: [{ path: "chat", element: <Chat /> }],
+  },
+
+  {
+    path: "*",
+
+    element: <Navigate to="/" replace />,
   },
 ]);
 
