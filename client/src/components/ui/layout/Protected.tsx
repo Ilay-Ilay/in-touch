@@ -13,7 +13,6 @@ export default function Protected() {
   if (!session) {
     return <Navigate to="/" replace />;
   }
-  console.log({ session, isPending });
   return (
     <SidebarProvider>
       <AppSidebar />

@@ -1,8 +1,8 @@
 import express from "express";
+import searchUsers from "../controllers/searchUsers.ts";
 
 const router = express.Router();
 
-router.get("/users", async (req: Request, res: Response) => {
-  try {
-  } catch (error) {}
-});
+router.get("/search/users", searchUsers);
+
+export default router;

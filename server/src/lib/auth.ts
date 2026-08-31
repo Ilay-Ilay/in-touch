@@ -8,8 +8,10 @@ import { sendResetEmail } from "./email";
 
 const client = new MongoClient(process.env.MONGO_URI!);
 
+export const db = client.db("in-touch");
+
 export const auth = betterAuth({
-  database: mongodbAdapter(client.db("in-touch")),
+  database: mongodbAdapter(db),
 
   emailAndPassword: {
     enabled: true,
