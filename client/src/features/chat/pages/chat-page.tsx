@@ -1,25 +1,16 @@
-import { Button } from "#components/ui/button";
-import { authClient } from "#lib/auth";
-import { LogOut } from "lucide-react";
+import { useUI } from "../../../providers/UIContext";
 
 export default function Chat({}) {
-  async function logOut() {
-    const { error } = await authClient.signOut();
-
-    if (error) {
-      console.error(error);
-
-      return;
-    }
-  }
-
+  const { selectedUser } = useUI();
   return (
-    <div>
-      <Button onClick={logOut}>
-        Logout
-        <LogOut />
-      </Button>
-      Chat is here
-    </div>
+    <main className="min-h-screen">
+      {!selectedUser && (
+        <div className="flex w-full h-full items-center justify-center">
+          <span className="text-muted-foreground text-sm">
+            Select a chat to start messaging
+          </span>
+        </div>
+      )}
+    </main>
   );
 }

@@ -3,10 +3,11 @@ import Login from "../features/auth/pages/login-page";
 import SignUp from "../features/auth/pages/sign-up-page";
 
 import Chat from "../features/chat/pages/chat-page";
-import Public from "#components/ui/layout/Public";
-import Protected from "#components/ui/layout/Protected";
+
 import ForgotPassword from "../features/auth/pages/forgot-password-page";
 import ResetPassword from "../features/auth/pages/reset-password-page";
+import Public from "#components/ui/layout/public";
+import Protected from "#components/ui/layout/protected";
 
 const router = createBrowserRouter([
   {

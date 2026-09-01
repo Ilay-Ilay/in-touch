@@ -1,12 +1,13 @@
 import { Search, X } from "lucide-react";
 
 import { Button } from "#components/ui/button";
-import type { User } from "../../schema/types";
 import { useEffect, useState } from "react";
+import type { User } from "../../schema/types";
 
 type Props = {
   setSearchMode: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchResults: React.Dispatch<React.SetStateAction<null | User[]>>;
+  setSearchLoading: React.Dispatch<React.SetStateAction<boolean>>;
   isSearchMode: boolean;
 };
 
@@ -14,12 +15,14 @@ export function SidebarSearch({
   setSearchMode,
   isSearchMode,
   setSearchResults,
+  setSearchLoading,
 }: Props) {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (search.length <= 2) return;
     async function getSearchResults() {
+      setSearchLoading(true);
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/search/users?q=${encodeURIComponent(search)}`,
 
@@ -30,12 +33,12 @@ export function SidebarSearch({
 
       if (!res.ok) {
         setSearchResults(null);
-
+        setSearchLoading(false);
         return;
       }
       const data = await res.json();
-      console.log(data);
-      setSearchResults(data);
+      setSearchResults(data.users);
+      setSearchLoading(false);
     }
     getSearchResults();
   }, [search]);

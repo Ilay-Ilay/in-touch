@@ -1,9 +1,14 @@
+export type Conversation = {
+  directKey: String;
+  type: String;
+};
+
 export type User = {
-  id: string;
+  _id: string;
 
   username: string;
 
-  name?: string;
+  name: string;
 
-  image?: string;
+  image: string | null;
 };
