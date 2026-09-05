@@ -10,6 +10,7 @@ import { SidebarSearch } from "./sidebar-search";
 import SearchResultTab from "./search-result-tab";
 import type { User } from "../../schema/types";
 import FullScreenLoader from "#components/ui/fullscreen-loader";
+import SidebarChats from "./sidebar-chats";
 
 export function AppSidebar() {
   const [isSearchMode, setSearchMode] = useState(false);
@@ -28,7 +29,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {isSearchMode && (
+          {isSearchMode ? (
             <>
               {searchLoading && (
                 <div className="flex flex-1 items-center justify-center">
@@ -52,6 +53,10 @@ export function AppSidebar() {
                 searchResults?.map((user) => (
                   <SearchResultTab key={user._id} user={user} />
                 ))}
+            </>
+          ) : (
+            <>
+              <SidebarChats />
             </>
           )}
         </SidebarGroup>

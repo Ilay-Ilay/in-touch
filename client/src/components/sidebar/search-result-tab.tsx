@@ -1,18 +1,31 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useUI } from "../../providers/UIContext";
-import type { User } from "../../schema/types";
+import type { ChatListItem, User } from "../../schema/types";
 
 type Props = {
   user: User;
 };
 
 export default function SearchResultTab({ user }: Props) {
-  const { selectedUser, setSelectedUser } = useUI();
-
+  const { activeChat, setActiveChat } = useUI();
+  const { userId } = activeChat;
+  const queryClient = useQueryClient();
   return (
     <div
-      className={`${selectedUser?._id === user._id ? "bg-brand" : ""} border-b cursor-pointer p-2 rounded-md`}
+      className={`${userId === user._id ? "bg-brand" : ""} border-b cursor-pointer p-2 rounded-md`}
       onClick={() => {
-        setSelectedUser(user);
+        // Find out if chat with this user exists in chats cache if yes then
+        // then set chat id to what was found in cache
+        const chats = queryClient.getQueryData<ChatListItem[]>(["chats"]);
+
+        const chat = chats?.find((chat) => chat.otherUser?._id === user._id);
+
+        const existingId = chat?.chatId ?? null;
+
+        setActiveChat({
+          userId: user._id,
+          chatId: existingId,
+        });
       }}
     >
       <div
@@ -33,7 +46,7 @@ export default function SearchResultTab({ user }: Props) {
             {user.name ? user.name : user.username}
           </span>
           <span
-            className={`text-xs ${selectedUser?._id === user._id ? "text-primary" : "text-muted-foreground"}`}
+            className={`text-xs ${userId === user._id ? "text-primary" : "text-muted-foreground"}`}
           >
             @{user.username}
           </span>

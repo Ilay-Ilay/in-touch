@@ -20,27 +20,61 @@ export function SidebarSearch({
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    if (search.length <= 2) return;
+    if (search.length <= 2) {
+      setSearchResults(null);
+
+      setSearchLoading(false);
+
+      return;
+    }
+
+    const controller = new AbortController();
+
     async function getSearchResults() {
       setSearchLoading(true);
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/search/users?q=${encodeURIComponent(search)}`,
 
-        {
-          credentials: "include",
-        },
-      );
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/search/users?q=${encodeURIComponent(search)}`,
 
-      if (!res.ok) {
+          {
+            credentials: "include",
+
+            signal: controller.signal,
+          },
+        );
+
+        if (!res.ok) {
+          setSearchResults(null);
+
+          return;
+        }
+
+        const data = await res.json();
+
+        setSearchResults(data.users);
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+
+        console.error(error);
+
         setSearchResults(null);
-        setSearchLoading(false);
-        return;
+      } finally {
+        if (!controller.signal.aborted) {
+          setSearchLoading(false);
+        }
       }
-      const data = await res.json();
-      setSearchResults(data.users);
-      setSearchLoading(false);
     }
-    getSearchResults();
+
+    const timeout = setTimeout(getSearchResults, 500);
+
+    return () => {
+      clearTimeout(timeout);
+
+      controller.abort();
+    };
   }, [search]);
 
   return (

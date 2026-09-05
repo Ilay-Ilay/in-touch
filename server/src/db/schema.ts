@@ -1,31 +1,37 @@
 import mongoose from "mongoose";
 
-const conversationSchema = new mongoose.Schema({
-  type: {
-    type: String,
+const chatSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
 
-    enum: ["direct", "group"],
+      enum: ["direct", "group"],
 
-    required: true,
+      required: true,
+    },
+
+    directKey: {
+      type: String,
+
+      unique: true,
+
+      sparse: true,
+    },
   },
 
-  directKey: {
-    type: String,
-
-    unique: true,
-
-    sparse: true,
+  {
+    timestamps: true,
   },
-});
+);
 
-export const Conversation = mongoose.model("Conversation", conversationSchema);
+export const Chat = mongoose.model("Chat", chatSchema);
 
 const messageSchema = new mongoose.Schema(
   {
-    conversationId: {
+    chatId: {
       type: mongoose.Schema.Types.ObjectId,
 
-      ref: "Conversation",
+      ref: "Chat",
 
       required: true,
     },
@@ -54,12 +60,13 @@ const messageSchema = new mongoose.Schema(
 
 export const Message = mongoose.model("Message", messageSchema);
 
-const conversationMemberSchema = new mongoose.Schema({
+const chatMemberSchema = new mongoose.Schema({
   lastRead: {
     type: Date,
 
     default: null,
   },
+
   userId: {
     type: mongoose.Schema.Types.ObjectId,
 
@@ -67,24 +74,21 @@ const conversationMemberSchema = new mongoose.Schema({
 
     required: true,
   },
-  conversationId: {
+
+  chatId: {
     type: mongoose.Schema.Types.ObjectId,
 
-    ref: "Conversation",
+    ref: "Chat",
 
     required: true,
   },
 });
+messageSchema.index({ chatId: 1, createdAt: 1 });
 
-messageSchema.index({ conversationId: 1, createdAt: 1 });
-
-conversationMemberSchema.index(
-  { conversationId: 1, userId: 1 },
+chatMemberSchema.index(
+  { chatId: 1, userId: 1 },
 
   { unique: true },
 );
 
-export const ConversationMember = mongoose.model(
-  "ConversationMember",
-  conversationMemberSchema,
-);
+export const ChatMember = mongoose.model("ChatMember", chatMemberSchema);
