@@ -11,7 +11,7 @@ export default function Message({ message, isMyMessage }: Props) {
 
   return (
     <div
-      className={`w-fit sm:max-w-[70%] p-2 rounded-xl text-sm ${
+      className={`w-fit sm:max-w-[70%] p-2 rounded-xl text-xs ${
         isMyMessage
           ? "bg-brand rounded-br-none"
           : "bg-secondary rounded-bl-none"

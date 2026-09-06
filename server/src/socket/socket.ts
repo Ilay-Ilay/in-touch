@@ -12,7 +12,6 @@ export function initializeSocket(io: Server) {
         if (!mongoose.isObjectIdOrHexString(data.chatId)) {
           return;
         }
-        console.log("CHAT WAS SEEN BY THE USER");
         const chatId = new mongoose.Types.ObjectId(data.chatId);
 
         const userId = new mongoose.Types.ObjectId(socket.userId);

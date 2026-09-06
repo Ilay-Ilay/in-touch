@@ -21,25 +21,15 @@ type Props = {};
 
 export default function ChatFeed({}: Props) {
   const { activeChat } = useUI();
-  const { chatId, userId } = activeChat;
+  const { chatId } = activeChat;
   const { data: chatData, isLoading, error } = useActiveChat();
-
-  const socket = useSocket();
 
   const { data: session, isPending } = authClient.useSession();
   const sessionId = session?.user?.id;
 
-  console.log("ChatFeed render:", chatId);
-  // Mark chatSeen when chat id changes or new messages update the cache
-  useEffect(() => {
-    if (!chatId) return;
-
-    socket.emit("chatSeen", chatId);
-  }, [chatId, chatData?.messages.length]);
-
   if (isLoading || isPending) return <FullScreenLoader />;
 
-  // If chat feed changes mark messages as read and emit a message
+  // If chat feed changes, mark messages as read and emit a message
 
   // sort messages by calendar date
   const sortedMessages: Record<string, MessageType[]> = {};
@@ -99,8 +89,6 @@ export default function ChatFeed({}: Props) {
           </div>
         )}
       </div>
-
-      {/* Input */}
       <ChatInput />
     </div>
   );

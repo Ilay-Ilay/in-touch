@@ -84,9 +84,15 @@ export default function ChatTab({ chat }: Props) {
             >
               {shortenString(content)}
             </span>
-            <div className="flex items-center justify-center bg-primary h-4 w-4 rounded-full text-background font-medium text-center">
-              <span className="text-xs font-semibold"> {chat.unreadCount}</span>
-            </div>
+
+            {chat.unreadCount > 0 && (
+              <div className="flex items-center justify-center bg-primary h-4 w-4 rounded-full text-background font-medium text-center">
+                <span className="text-xs font-semibold">
+                  {" "}
+                  {chat.unreadCount}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

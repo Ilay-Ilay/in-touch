@@ -8,11 +8,11 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <SocketProvider>
-        <UIProvider>
+      <UIProvider>
+        <SocketProvider>
           <Router />
-        </UIProvider>
-      </SocketProvider>
+        </SocketProvider>
+      </UIProvider>
     </QueryClientProvider>
   );
 }
