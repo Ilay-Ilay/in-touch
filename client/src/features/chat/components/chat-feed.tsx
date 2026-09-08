@@ -1,12 +1,10 @@
-import { useUI } from "../../../providers/UIContext";
 import ChatInput from "./chat-input";
-import useActiveChat from "../hooks/useActiveChat";
 import FullScreenLoader from "#components/ui/fullscreen-loader";
-import { authClient } from "#lib/auth";
 import Message from "./message";
 import formatMessageDate from "../utils/formatMessageDate";
-import useSocket from "../../../providers/SocketContext";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import useInfiniteLoad from "../hooks/useInfiniteLoad";
+import sortPages from "../utils/sortPages";
 
 export type MessageType = {
   _id: string;
@@ -20,72 +18,122 @@ export type MessageType = {
 type Props = {};
 
 export default function ChatFeed({}: Props) {
-  const { activeChat } = useUI();
-  const { chatId } = activeChat;
-  const { data: chatData, isLoading, error } = useActiveChat();
+  // INFINITE LOAD FETCHING
+  const {
+    messages,
 
-  const { data: session, isPending } = authClient.useSession();
-  const sessionId = session?.user?.id;
+    fetchNextPage,
 
-  if (isLoading || isPending) return <FullScreenLoader />;
+    hasNextPage,
 
-  // If chat feed changes, mark messages as read and emit a message
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteLoad();
 
-  // sort messages by calendar date
-  const sortedMessages: Record<string, MessageType[]> = {};
+  //
 
-  chatData.messages.forEach((message: MessageType) => {
-    const date = new Date(message.createdAt);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    // ISO FORMAT so I can transform that into Date object later
-    const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-      date.getDate(),
-    ).padStart(2, "0")}`;
+  const previousScrollPositionRef = useRef<{
+    scrollTop: number;
 
-    if (!sortedMessages[dateKey]) {
-      sortedMessages[dateKey] = [message];
-    } else {
-      sortedMessages[dateKey].push(message);
+    scrollHeight: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) return;
+
+    const handleScroll = () => {
+      if (container.scrollTop <= 10 && hasNextPage && !isFetchingNextPage) {
+        previousScrollPositionRef.current = {
+          scrollTop: container.scrollTop,
+
+          scrollHeight: container.scrollHeight,
+        };
+
+        fetchNextPage();
+      }
+    };
+
+    container.addEventListener("scroll", handleScroll);
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  // INITIAL LOAD
+
+  const initialLoad = useRef(true);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+
+    if (!container || !messages.length) return;
+
+    if (initialLoad.current) {
+      // SCROLL TO THE END IF INITIAL LOAD AND SET INITIAL TO FALSE
+      container.scrollTop = container.scrollHeight;
+
+      initialLoad.current = false;
+
+      return;
     }
-  });
+
+    const previous = previousScrollPositionRef.current;
+
+    if (!previous) return;
+
+    const restoreScroll = () => {
+      const heightAdded = container.scrollHeight - previous.scrollHeight;
+
+      if (heightAdded > 0) {
+        container.scrollTop = previous.scrollTop + heightAdded;
+
+        previousScrollPositionRef.current = null;
+      }
+    };
+
+    requestAnimationFrame(restoreScroll);
+  }, [messages]);
+
+  if (isLoading) return <FullScreenLoader />;
+  // SORT MESSAGES BY CALENDAR DATE
+  const sortedMessages: Record<string, MessageType[]> = sortPages(messages);
 
   return (
     <div className="h-screen relative flex flex-col">
-      {/* Messages */}
-      <div className="flex-1 min-h-0 overflow-y-auto p-8 pb-32">
-        {!chatId ? (
+      <div
+        ref={containerRef}
+        className="flex-1 min-h-0 overflow-y-auto p-8 pb-32"
+      >
+        {!messages ? (
           <div className="text-muted-foreground flex h-full items-center justify-center">
             No messages here yet
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            {chatData &&
-              session &&
-              Object.keys(sortedMessages).map((dateKey) => (
-                <div key={dateKey}>
-                  <div className="text-center text-xs text-muted-foreground mb-2">
-                    {formatMessageDate(new Date(dateKey))}
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    {sortedMessages[dateKey].map((message: MessageType) => (
-                      <div
-                        key={message._id}
-                        className={`flex ${
-                          sessionId === message.senderId
-                            ? "justify-end"
-                            : "justify-start"
-                        }`}
-                      >
-                        <Message
-                          message={message}
-                          isMyMessage={sessionId === message.senderId}
-                        />
+            {messages && (
+              <>
+                {Object.keys(sortedMessages)
+                  .sort()
+                  .map((dateKey) => (
+                    <div key={dateKey}>
+                      <div className="text-center text-xs text-muted-foreground mb-2">
+                        {formatMessageDate(new Date(dateKey))}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
+
+                      <div className="flex flex-col gap-2">
+                        {sortedMessages[dateKey].map((message: MessageType) => (
+                          <Message key={message._id} message={message} />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+              </>
+            )}
           </div>
         )}
       </div>

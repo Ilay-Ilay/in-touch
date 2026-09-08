@@ -9,6 +9,6 @@ router.get("/search/users", searchUsers);
 
 router.get("/chats", getChats);
 
-router.get("/chat", ChatController);
+router.get("/chat/:chatId", ChatController);
 
 export default router;

@@ -1,3 +1,5 @@
+import formatDate from "../../features/chat/utils/formatDate";
+import formatTime from "../../features/chat/utils/formatTime";
 import isTodaysDate from "../../features/chat/utils/isTodaysDate";
 import shortenString from "../../features/chat/utils/shortenString";
 import { useUI } from "../../providers/UIContext";
@@ -43,7 +45,7 @@ export default function ChatTab({ chat }: Props) {
 
   return (
     <div
-      className={`${userId === _id ? "bg-brand rounded-md" : "border-b"} cursor-pointer p-2`}
+      className={`${userId === _id ? "bg-secondary rounded-md" : "border-b"} cursor-pointer p-2`}
       onClick={() => {
         setActiveChat({
           chatId: chat.chatId,
@@ -58,7 +60,7 @@ export default function ChatTab({ chat }: Props) {
         {chat.otherUser.image ? (
           <img />
         ) : (
-          <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center">
+          <div className="h-12 w-12 rounded-full bg-brand flex items-center justify-center">
             <span className="font-semibold">
               {username.charAt(0).toUpperCase()}
             </span>
@@ -74,8 +76,8 @@ export default function ChatTab({ chat }: Props) {
               className={`text-xs ${userId === _id ? "text-primary" : "text-muted-foreground"}`}
             >
               {isToday
-                ? `${createdDate.getHours()}:${createdDate.getMinutes()}`
-                : `${111} Ashaleeet`}
+                ? `${formatTime(createdDate)}`
+                : `${formatDate(createdDate)}`}
             </span>
           </div>
           <div className="flex justify-between">

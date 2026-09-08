@@ -12,7 +12,7 @@ export default function SearchResultTab({ user }: Props) {
   const queryClient = useQueryClient();
   return (
     <div
-      className={`${userId === user._id ? "bg-brand" : ""} border-b cursor-pointer p-2 rounded-md`}
+      className={`${userId === user._id ? "bg-secondary rounded-md" : "border-b "} cursor-pointer p-2`}
       onClick={() => {
         // Find out if chat with this user exists in chats cache if yes then
         // then set chat id to what was found in cache
@@ -35,7 +35,7 @@ export default function SearchResultTab({ user }: Props) {
         {user.image ? (
           <img />
         ) : (
-          <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center">
+          <div className="h-12 w-12 rounded-full bg-brand flex items-center justify-center">
             <span className="font-semibold">
               {user.username.charAt(0).toUpperCase()}
             </span>

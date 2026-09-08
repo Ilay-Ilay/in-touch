@@ -48,7 +48,7 @@ export default function ChatInput() {
         type="submit"
         disabled={message.length === 0}
         size={"icon-lg"}
-        className={`${message.length > 0 ? "bg-brand text-forgeround hover:bg-brand" : " bg-secondary text-muted-foreground"} rounded-full h-12 w-12`}
+        className={`${message.length > 0 ? "bg-brand text-forgeround hover:bg-brand-dark" : " bg-secondary text-muted-foreground"} rounded-full h-12 w-12`}
       >
         <Send strokeWidth={3} />
       </Button>

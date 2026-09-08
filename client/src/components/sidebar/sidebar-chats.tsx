@@ -6,7 +6,6 @@ type Props = {};
 
 export default function SidebarChats({}: Props) {
   const { isLoading, data: chats, error } = useChats();
-  console.log(chats);
   return (
     <div>
       {isLoading && <FullScreenLoader />}
