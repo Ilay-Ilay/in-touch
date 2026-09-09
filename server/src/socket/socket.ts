@@ -2,10 +2,18 @@ import type { Server } from "socket.io";
 import { Chat, ChatMember, Message } from "../db/schema";
 import getDirectKey from "../utils/getDirectKey";
 import mongoose from "mongoose";
+import { send } from "node:process";
+import sendOnlineStatus from "../utils/sendOnlineStatus";
+
+type OnlineSocket = Record<string, string>;
+
+export const onlineUsers = new Set<string>();
 
 export function initializeSocket(io: Server) {
   io.on("connection", (socket) => {
     socket.join(socket.userId);
+    onlineUsers.add(socket.userId);
+    sendOnlineStatus(socket);
 
     socket.on("chatSeen", async (data) => {
       try {
@@ -83,6 +91,7 @@ export function initializeSocket(io: Server) {
       }
     });
     socket.on("disconnect", () => {
+      onlineUsers.delete(socket.userId);
       console.log("Client disconnected:", socket.id);
     });
   });

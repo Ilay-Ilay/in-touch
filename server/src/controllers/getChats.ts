@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ChatMember } from "../db/schema";
 import mongoose from "mongoose";
+import { onlineUsers } from "../socket/socket";
 
 export default async function getChats(req: Request, res: Response) {
   try {
@@ -166,7 +167,18 @@ export default async function getChats(req: Request, res: Response) {
       },
     ]);
 
-    return res.status(200).json(chats);
+    const chatsWithStatus = chats.map((chat) => ({
+      ...chat,
+
+      otherUser: chat.otherUser
+        ? {
+            ...chat.otherUser,
+
+            isOnline: onlineUsers.has(String(chat.otherUser._id)),
+          }
+        : null,
+    }));
+    return res.status(200).json(chatsWithStatus);
   } catch (error) {
     console.error("Failed to get chats:", error);
 

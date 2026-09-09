@@ -5,7 +5,8 @@ import ChatTab from "./chat-tab";
 type Props = {};
 
 export default function SidebarChats({}: Props) {
-  const { isLoading, data: chats, error } = useChats();
+  const { isLoading, data: chats } = useChats();
+
   return (
     <div>
       {isLoading && <FullScreenLoader />}

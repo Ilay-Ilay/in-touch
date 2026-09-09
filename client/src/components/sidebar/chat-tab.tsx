@@ -23,6 +23,7 @@ type ChatData = {
     name: string;
     image: string | null;
     username: string;
+    isOnline?: boolean | null;
   };
 };
 
@@ -57,15 +58,20 @@ export default function ChatTab({ chat }: Props) {
         className="flex
          items-center gap-2"
       >
-        {chat.otherUser.image ? (
-          <img />
-        ) : (
-          <div className="h-12 w-12 rounded-full bg-brand flex items-center justify-center">
-            <span className="font-semibold">
-              {username.charAt(0).toUpperCase()}
-            </span>
-          </div>
-        )}
+        <div className="relative">
+          {chat.otherUser.isOnline && (
+            <div className="h-4 w-4 rounded-full bg-green-700 border-sidebar border-3 absolute top-0 right-0" />
+          )}
+          {chat.otherUser.image ? (
+            <img />
+          ) : (
+            <div className="h-12 w-12 rounded-full bg-brand flex items-center justify-center">
+              <span className="font-semibold">
+                {username.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
+        </div>
         <div className="flex flex-col gap-1 flex-1">
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium">

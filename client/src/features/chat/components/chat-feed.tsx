@@ -66,21 +66,26 @@ export default function ChatFeed({}: Props) {
 
   // INITIAL LOAD
 
-  const initialLoad = useRef(true);
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container || !messages.length) return;
+
+    // Don't scroll to bottom when loading older messages
+
+    if (previousScrollPositionRef.current) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
+
+      behavior: "instant",
+    });
+  }, [messages]);
 
   useLayoutEffect(() => {
     const container = containerRef.current;
 
     if (!container || !messages.length) return;
-
-    if (initialLoad.current) {
-      // SCROLL TO THE END IF INITIAL LOAD AND SET INITIAL TO FALSE
-      container.scrollTop = container.scrollHeight;
-
-      initialLoad.current = false;
-
-      return;
-    }
 
     const previous = previousScrollPositionRef.current;
 
