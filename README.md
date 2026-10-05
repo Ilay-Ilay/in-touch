@@ -1,6 +1,7 @@
 # InTouch
 
-A real-time chat application built with React, TypeScript, Node.js, Express, Socket.IO, and MongoDB.
+<img width="1440" height="811" alt="Screenshot 2026-10-05 at 15 44 40" src="https://github.com/user-attachments/assets/d4fce17b-853d-4f90-9e69-a1221274c2f1" />
+
 
 ## Features
 
