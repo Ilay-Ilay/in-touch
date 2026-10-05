@@ -18,7 +18,6 @@ export type MessageType = {
 type Props = {};
 
 export default function ChatFeed({}: Props) {
-  // INFINITE LOAD FETCHING
   const {
     messages,
 
@@ -32,6 +31,8 @@ export default function ChatFeed({}: Props) {
 
   //
 
+  // WHEN THE USER REACHES TOP OF THE REF STORE PREVIOUS POSITION AND RUN INFINITE FETCH
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   const previousScrollPositionRef = useRef<{
@@ -39,6 +40,8 @@ export default function ChatFeed({}: Props) {
 
     scrollHeight: number;
   } | null>(null);
+
+  // LISTEN FOR SCROLL EVENT WHEN THE USER REACHES THE TOP RUN A QUERY AND STORE POSITION OF TOP OF THE REF
 
   useEffect(() => {
     const container = containerRef.current;
@@ -64,14 +67,14 @@ export default function ChatFeed({}: Props) {
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // INITIAL LOAD
+  // SCROLL TO BOTTOM WHEN MESSAGES CACHE IS UPDATED
 
   useEffect(() => {
     const container = containerRef.current;
 
     if (!container || !messages.length) return;
 
-    // Don't scroll to bottom when loading older messages
+    // DO NOT SCROLL WHEN LOADING OLDER MESSAGES
 
     if (previousScrollPositionRef.current) return;
 
@@ -81,6 +84,8 @@ export default function ChatFeed({}: Props) {
       behavior: "instant",
     });
   }, [messages]);
+
+  // AFTER THE BROWSER DRAWS THE PAGE UPDATE THE SCROLL POSITION TO START NOT FROM THE TOP
 
   useLayoutEffect(() => {
     const container = containerRef.current;

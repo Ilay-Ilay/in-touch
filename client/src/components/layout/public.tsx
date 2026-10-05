@@ -1,6 +1,6 @@
 import { authClient } from "#lib/auth";
 import { Navigate, Outlet } from "react-router";
-import FullScreenLoader from "../fullscreen-loader";
+import FullScreenLoader from "../ui/fullscreen-loader";
 
 export default function Public() {
   const { data: session, isPending } = authClient.useSession();

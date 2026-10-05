@@ -11,6 +11,7 @@ import SearchResultTab from "./search-result-tab";
 import type { User } from "../../schema/types";
 import FullScreenLoader from "#components/ui/fullscreen-loader";
 import SidebarChats from "./sidebar-chats";
+import SidebarProfile from "./sidebar-profile";
 
 export function AppSidebar() {
   const [isSearchMode, setSearchMode] = useState(false);
@@ -20,6 +21,8 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
+        <SidebarProfile />
+
         <SidebarSearch
           setSearchLoading={setSearchLoading}
           setSearchMode={setSearchMode}

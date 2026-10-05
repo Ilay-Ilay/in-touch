@@ -1,7 +1,7 @@
 import { authClient } from "#lib/auth";
 import { Navigate, Outlet } from "react-router";
-import FullScreenLoader from "../fullscreen-loader";
-import { SidebarInset, SidebarProvider } from "../sidebar";
+import FullScreenLoader from "../ui/fullscreen-loader";
+import { SidebarInset, SidebarProvider } from "../ui/sidebar";
 import { AppSidebar } from "#components/sidebar/app-sidebar";
 
 export default function Protected() {

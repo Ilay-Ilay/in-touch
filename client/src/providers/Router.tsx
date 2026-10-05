@@ -6,8 +6,9 @@ import Chat from "../features/chat/pages/chat-page";
 
 import ForgotPassword from "../features/auth/pages/forgot-password-page";
 import ResetPassword from "../features/auth/pages/reset-password-page";
-import Public from "#components/ui/layout/public";
-import Protected from "#components/ui/layout/protected";
+import Public from "#components/layout/public";
+import Protected from "#components/layout/protected";
+import Profile from "../features/profile/pages/profile";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,10 @@ const router = createBrowserRouter([
   {
     element: <Protected />,
 
-    children: [{ path: "chat", element: <Chat /> }],
+    children: [
+      { path: "chat", element: <Chat /> },
+      { path: "profile", element: <Profile /> },
+    ],
   },
 
   {

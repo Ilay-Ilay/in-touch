@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import formatDate from "../../features/chat/utils/formatDate";
 import formatTime from "../../features/chat/utils/formatTime";
 import isTodaysDate from "../../features/chat/utils/isTodaysDate";
@@ -33,10 +34,10 @@ type Props = {
 
 export default function ChatTab({ chat }: Props) {
   const { activeChat, setActiveChat } = useUI();
-
+  const navigate = useNavigate();
   const { userId, chatId } = activeChat;
 
-  if (!chat.otherUser) return null;
+  if (!chat.otherUser || !chat.lastMessage) return null;
   const { _id, username, image, name } = chat.otherUser;
   const { content, createdAt } = chat.lastMessage;
 
@@ -46,8 +47,11 @@ export default function ChatTab({ chat }: Props) {
 
   return (
     <div
-      className={`${userId === _id ? "bg-secondary rounded-md" : "border-b"} cursor-pointer p-2`}
+      className={`${userId === _id ? "bg-brand-dark rounded-md" : "border-b"} cursor-pointer p-2`}
       onClick={() => {
+        navigate("/chat", {
+          replace: true,
+        });
         setActiveChat({
           chatId: chat.chatId,
           userId: _id,
@@ -78,18 +82,14 @@ export default function ChatTab({ chat }: Props) {
               {name ? shortenString(name) : shortenString(username)}
             </span>
 
-            <span
-              className={`text-xs ${userId === _id ? "text-primary" : "text-muted-foreground"}`}
-            >
+            <span className={`text-xs text-muted-foreground`}>
               {isToday
                 ? `${formatTime(createdDate)}`
                 : `${formatDate(createdDate)}`}
             </span>
           </div>
           <div className="flex justify-between">
-            <span
-              className={`text-xs ${userId === _id ? "text-primary" : "text-muted-foreground"}`}
-            >
+            <span className={`text-xs text-muted-foreground`}>
               {shortenString(content)}
             </span>
 

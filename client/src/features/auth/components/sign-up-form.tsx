@@ -55,7 +55,7 @@ export default function SignUpForm({}: Props) {
 
       password: data.password,
 
-      name: data.username,
+      name: "",
     });
 
     if (error) {

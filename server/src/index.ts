@@ -16,13 +16,15 @@ export interface AuthenticatedSocket extends Socket {
 
 const PORT = process.env.PORT || 8888;
 
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+
 const app = express();
 const httpServer = createServer(app);
 await connectDB();
 
 export const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: CLIENT_ORIGIN,
 
     credentials: true,
   },
@@ -52,7 +54,7 @@ initializeSocket(io);
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: CLIENT_ORIGIN,
 
     methods: ["GET", "POST", "PUT", "DELETE"],
 
